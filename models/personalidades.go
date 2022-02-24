@@ -7,3 +7,10 @@ type Personalidade struct {
 }
 
 var Personalidades []Personalidade
+
+type ErrorMessage struct {
+	Msg  string `json:"Msg"`
+	Name string `json:"Name"`
+}
+
+var ErrorMessages []ErrorMessage

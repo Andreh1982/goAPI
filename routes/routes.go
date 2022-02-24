@@ -14,10 +14,11 @@ import (
 )
 
 func HandleResquest() {
+
 	r := mux.NewRouter()
 	r.Use(middleware.ContentTypeMiddleware)
 
-	shared.ZapLogCustom("Criando rotas.", "info")
+	shared.ZapLogCustom([]string{"Criando rotas..."}, "info")
 
 	r.HandleFunc("/", controllers.Home)
 	r.HandleFunc("/api/personalidades/todas", controllers.TodasPersonalidades).Methods("Get")
@@ -26,7 +27,8 @@ func HandleResquest() {
 	r.HandleFunc("/api/personalidades/del/{id}", controllers.DeletaUmaPersonalidade).Methods("Delete")
 	r.HandleFunc("/api/personalidades/upgrade/{id}", controllers.EditaPersonalidade).Methods("Put")
 
-	shared.ZapLogCustom("Iniciando API.", "info")
+	shared.ZapLogCustom([]string{"Iniciando a API..."}, "info")
 
 	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))
+
 }
