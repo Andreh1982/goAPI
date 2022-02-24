@@ -2,6 +2,7 @@ package shared
 
 import (
 	"log"
+	"os"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -17,6 +18,7 @@ func ZapLogCustom(message []string, errorlevel string) {
 
 	if err != nil {
 		log.Fatalf("can't initialize zap logger: %v", err)
+		os.Exit(1)
 	}
 
 	defer ZapLogger.Sync()

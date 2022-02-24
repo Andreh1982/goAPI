@@ -6,11 +6,10 @@ import (
 
 	"goAPI/controllers"
 	"goAPI/middleware"
+	"goAPI/shared"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-
-	"goAPI/shared"
 )
 
 func HandleResquest() {
@@ -18,7 +17,7 @@ func HandleResquest() {
 	r := mux.NewRouter()
 	r.Use(middleware.ContentTypeMiddleware)
 
-	shared.ZapLogCustom([]string{"Criando rotas..."}, "info")
+	shared.ZapLogCustom([]string{"Criando rotas."}, "info")
 
 	r.HandleFunc("/", controllers.Home)
 	r.HandleFunc("/api/personalidades/todas", controllers.TodasPersonalidades).Methods("Get")
@@ -27,7 +26,7 @@ func HandleResquest() {
 	r.HandleFunc("/api/personalidades/del/{id}", controllers.DeletaUmaPersonalidade).Methods("Delete")
 	r.HandleFunc("/api/personalidades/upgrade/{id}", controllers.EditaPersonalidade).Methods("Put")
 
-	shared.ZapLogCustom([]string{"Iniciando a API..."}, "info")
+	shared.ZapLogCustom([]string{"Iniciando a API."}, "info")
 
 	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(handlers.AllowedOrigins([]string{"*"}))(r)))
 
