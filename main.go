@@ -1,19 +1,17 @@
 package main
 
 import (
-	"fmt"
-
 	"goAPI/database"
-	"goAPI/models"
 	"goAPI/routes"
+	"goAPI/shared"
 )
 
 func main() {
-	models.Personalidades = []models.Personalidade{
-		{Id: 1, Nome: "Nome 1", Historia: "Historia 1"},
-		{Id: 2, Nome: "Nome 2", Historia: "Historia 2"},
-	}
+
+	shared.ZapLogCustom("Iniciando o servidor goAPI", "info")
+
 	database.ConectaComBancoDeDados()
-	fmt.Println("Iniciando o servidor Rest com Go")
+
 	routes.HandleResquest()
+
 }

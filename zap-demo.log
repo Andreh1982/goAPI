@@ -1,0 +1,3 @@
+{"level":"info","ts":1645660179.8933241,"caller":"database/db.go:34","msg":"Conectado ao banco de dados."}
+{"level":"info","ts":1645660179.8988845,"caller":"routes/routes.go:26","msg":"Configurando endereços."}
+{"level":"info","ts":1645660179.8989909,"caller":"routes/routes.go:37","msg":"Iniciando o servidor http."}
