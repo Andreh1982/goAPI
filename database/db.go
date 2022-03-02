@@ -21,6 +21,6 @@ func ConectaComBancoDeDados() {
 		shared.ZapLogCustom([]string{"Erro ao conectar ao banco de dados!"}, "fatal")
 		os.Exit(1)
 	} else {
-		shared.ZapLogCustom([]string{"Conectado ao banco de dados."}, "info")
+		shared.ZapLogCustom([]string{"Conectado ao banco de dados"}, "info")
 	}
 }

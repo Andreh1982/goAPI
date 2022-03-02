@@ -17,7 +17,13 @@ func Home(c *gin.Context) {
 }
 
 func TodasPersonalidades(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+
 	var p []models.Personalidade
+
 	database.DB.Find(&p)
 	c.IndentedJSON(http.StatusOK, p)
 	shared.ZapLogCustom([]string{"Retornando todas as entradas"}, "info")
@@ -27,6 +33,11 @@ func TodasPersonalidades(c *gin.Context) {
 }
 
 func RetornaUmaPersonalidade(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+
 	var personalidade models.Personalidade
 
 	if err := database.DB.Where("Id = ?", c.Param("id")).First(&personalidade).Error; err != nil {
@@ -40,6 +51,11 @@ func RetornaUmaPersonalidade(c *gin.Context) {
 }
 
 func CriaUmaNovaPersonalidade(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+
 	var novaPersonalidade models.Personalidade
 
 	shared.ZapLogCustom([]string{"Criando nova entrada..."}, "info")
@@ -58,6 +74,10 @@ func CriaUmaNovaPersonalidade(c *gin.Context) {
 }
 
 func DeletaUmaPersonalidade(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
 
 	var personalidade models.Personalidade
 
@@ -76,6 +96,10 @@ func DeletaUmaPersonalidade(c *gin.Context) {
 }
 
 func EditaPersonalidade(c *gin.Context) {
+	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
 
 	var personalidade models.Personalidade
 
