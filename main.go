@@ -12,6 +12,6 @@ func main() {
 
 	database.ConectaComBancoDeDados()
 
-	routes.HandleResquest()
+	routes.HandleRequest()
 
 }

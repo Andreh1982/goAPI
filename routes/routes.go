@@ -11,7 +11,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-func HandleResquest() {
+func HandleRequest() {
 
 	router := gin.Default()
 	gin.SetMode("release")
