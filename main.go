@@ -8,8 +8,6 @@ import (
 
 func main() {
 
-	go routes.RunMetrics()
-
 	shared.ZapLogCustom([]string{"Iniciando o servidor goAPI"}, "info")
 
 	database.ConectaComBancoDeDados()
