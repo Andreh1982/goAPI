@@ -90,7 +90,6 @@ func DeletaUmaPersonalidade(c *gin.Context) {
 	database.DB.Delete(&personalidade)
 
 	c.JSON(http.StatusOK, gin.H{"Entrada deletada com êxito!": true})
-
 	shared.ZapLogCustom([]string{"[DEL] Deletando entrada..."}, "info")
 	shared.ZapLogCustom([]string{personalidade.Nome}, "info")
 }

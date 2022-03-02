@@ -27,6 +27,7 @@ func HandleRequest() {
 
 	shared.ZapLogCustom([]string{"Criando rotas."}, "info")
 
+	router.GET("/", controllers.Home)
 	router.GET("/api/personalidades/todas", controllers.TodasPersonalidades)
 	router.GET("/api/personalidades/unidade/:id", controllers.RetornaUmaPersonalidade)
 	router.POST("/api/personalidades/add", controllers.CriaUmaNovaPersonalidade)
