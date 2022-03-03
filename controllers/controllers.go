@@ -44,7 +44,7 @@ func RetornaUmaPersonalidade(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Entrada não localizada."})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": personalidade})
+	c.IndentedJSON(http.StatusOK, personalidade)
 	shared.ZapLogCustom([]string{personalidade.Nome}, "info")
 	shared.ZapLogCustom([]string{personalidade.Historia}, "info")
 
@@ -68,7 +68,7 @@ func CriaUmaNovaPersonalidade(c *gin.Context) {
 	personalidade := models.Personalidade{Nome: novaPersonalidade.Nome, Historia: novaPersonalidade.Historia}
 	database.DB.Create(&personalidade)
 
-	c.JSON(http.StatusOK, gin.H{"data": personalidade})
+	c.IndentedJSON(http.StatusOK, personalidade)
 	shared.ZapLogCustom([]string{novaPersonalidade.Nome}, "info")
 	shared.ZapLogCustom([]string{novaPersonalidade.Historia}, "info")
 }
