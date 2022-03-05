@@ -3,117 +3,102 @@ package controllers
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"goAPI/database"
 	"goAPI/models"
-	"goAPI/shared"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 )
 
-func Home(c *gin.Context) {
-	fmt.Println("Home Page")
+type APIEnv struct {
+	DB *gorm.DB
 }
 
-func TodasPersonalidades(c *gin.Context) {
-	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
-
-	var p []models.Personalidade
-
-	database.DB.Find(&p)
-	c.IndentedJSON(http.StatusOK, p)
-	shared.ZapLogCustom([]string{"Retornando todas as entradas"}, "info")
-	size := "Total de entradas: " + strconv.Itoa(len(p))
-	shared.ZapLogCustom([]string{size}, "info")
-
-}
-
-func RetornaUmaPersonalidade(c *gin.Context) {
-	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
-
-	var personalidade models.Personalidade
-
-	if err := database.DB.Where("Id = ?", c.Param("id")).First(&personalidade).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Entrada não localizada."})
+func (a *APIEnv) GetPersons(c *gin.Context) {
+	personalidade, err := database.GetPersons(a.DB)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 	c.IndentedJSON(http.StatusOK, personalidade)
-	shared.ZapLogCustom([]string{personalidade.Nome}, "info")
-	shared.ZapLogCustom([]string{personalidade.Historia}, "info")
-
 }
 
-func CriaUmaNovaPersonalidade(c *gin.Context) {
-	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
-
-	var novaPersonalidade models.Personalidade
-
-	shared.ZapLogCustom([]string{"Criando nova entrada..."}, "info")
-
-	if err := c.ShouldBindJSON(&novaPersonalidade); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Requisição falhou ao inserir uma nova entrada.": err.Error()})
+func (a *APIEnv) GetPerson(c *gin.Context) {
+	id := c.Params.ByName("id")
+	personalidade, exists, err := database.GetPersonByID(id, a.DB)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
-
-	personalidade := models.Personalidade{Nome: novaPersonalidade.Nome, Historia: novaPersonalidade.Historia}
-	database.DB.Create(&personalidade)
-
+	if !exists {
+		c.JSON(http.StatusNotFound, gin.H{"Error": "Personalidade não encontrada."})
+		return
+	}
 	c.IndentedJSON(http.StatusOK, personalidade)
-	shared.ZapLogCustom([]string{novaPersonalidade.Nome}, "info")
-	shared.ZapLogCustom([]string{novaPersonalidade.Historia}, "info")
 }
 
-func DeletaUmaPersonalidade(c *gin.Context) {
-	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
-
-	var personalidade models.Personalidade
-
-	// Get model if exist
-	if err := database.DB.Where("id = ?", c.Param("id")).First(&personalidade).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Entrada não localizada!"})
+func (a *APIEnv) CreatePerson(c *gin.Context) {
+	personalidade := models.Personalidade{}
+	err := c.BindJSON(&personalidade)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
-
-	database.DB.Delete(&personalidade)
-
-	c.JSON(http.StatusOK, gin.H{"Entrada deletada com êxito!": true})
-	shared.ZapLogCustom([]string{"[DEL] Deletando entrada..."}, "info")
-	shared.ZapLogCustom([]string{personalidade.Nome}, "info")
+	if err := a.DB.Create(&personalidade).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.IndentedJSON(http.StatusOK, personalidade)
 }
 
-func EditaPersonalidade(c *gin.Context) {
-	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
-
-	var personalidade models.Personalidade
-
-	if err := database.DB.Where("id = ?", c.Param("id")).First(&personalidade).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Entrada não localizada!"})
+func (a *APIEnv) DeletePerson(c *gin.Context) {
+	id := c.Params.ByName("id")
+	_, exists, err := database.GetPersonByID(id, a.DB)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
-
-	var updatePersonalidade models.Personalidade
-	if err := c.ShouldBindJSON(&updatePersonalidade); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"Erro ao atualizar entrada.": err.Error()})
+	if !exists {
+		c.JSON(http.StatusNotFound, gin.H{"Error": "Personalidade não encontrada."})
 		return
 	}
-	database.DB.Model(&personalidade).Updates(updatePersonalidade)
+	err = database.DeletePerson(id, a.DB)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"Status": "Personalidade deletada."})
+}
 
-	c.JSON(http.StatusOK, gin.H{"Entrada atualizada com sucesso.": personalidade})
-
+func (a *APIEnv) UpdatePerson(c *gin.Context) {
+	id := c.Params.ByName("id")
+	_, exists, err := database.GetPersonByID(id, a.DB)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	if !exists {
+		c.JSON(http.StatusNotFound, gin.H{"Error": "Personalidade não existe."})
+		return
+	}
+	updatedPerson := models.Personalidade{}
+	err = c.BindJSON(&updatedPerson)
+	if err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	if err := database.UpdatePerson(a.DB, &updatedPerson); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+	a.GetPerson(c)
 }

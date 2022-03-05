@@ -2,6 +2,7 @@ package routes
 
 import (
 	"goAPI/controllers"
+	"goAPI/database"
 	"goAPI/metric"
 	"goAPI/middleware"
 
@@ -27,12 +28,15 @@ func HandleRequest() {
 
 	shared.ZapLogCustom([]string{"Criando rotas."}, "info")
 
-	router.GET("/", controllers.Home)
-	router.GET("/api/personalidades/todas", controllers.TodasPersonalidades)
-	router.GET("/api/personalidades/unidade/:id", controllers.RetornaUmaPersonalidade)
-	router.POST("/api/personalidades/add", controllers.CriaUmaNovaPersonalidade)
-	router.PUT("/api/personalidades/update/:id", controllers.EditaPersonalidade)
-	router.DELETE("/api/personalidades/del/:id", controllers.DeletaUmaPersonalidade)
+	api := &controllers.APIEnv{
+		DB: database.GetDB(),
+	}
+
+	router.GET("", api.GetPersons)
+	router.GET("/:id", api.GetPerson)
+	router.POST("", api.CreatePerson)
+	router.PUT("/:id", api.UpdatePerson)
+	router.DELETE("/:id", api.DeletePerson)
 
 	shared.ZapLogCustom([]string{"Iniciando a API."}, "info")
 
