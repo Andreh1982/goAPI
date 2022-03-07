@@ -16,43 +16,44 @@ type APIEnv struct {
 }
 
 func (a *APIEnv) GetPersons(c *gin.Context) {
-	personalidade, err := database.GetPersons(a.DB)
+	CorsSetup(c)
+	person, err := database.GetPersons(a.DB)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.IndentedJSON(http.StatusOK, personalidade)
+	c.IndentedJSON(http.StatusOK, person)
 }
 
 func (a *APIEnv) GetPerson(c *gin.Context) {
 	id := c.Params.ByName("id")
-	personalidade, exists, err := database.GetPersonByID(id, a.DB)
+	person, exists, err := database.GetPersonByID(id, a.DB)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
 	if !exists {
-		c.JSON(http.StatusNotFound, gin.H{"Error": "Personalidade não encontrada."})
+		c.JSON(http.StatusNotFound, gin.H{"Error": "Person not found."})
 		return
 	}
-	c.IndentedJSON(http.StatusOK, personalidade)
+	c.IndentedJSON(http.StatusOK, person)
 }
 
 func (a *APIEnv) CreatePerson(c *gin.Context) {
-	personalidade := models.Personalidade{}
-	err := c.BindJSON(&personalidade)
+	person := models.Person{}
+	err := c.BindJSON(&person)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
-	if err := a.DB.Create(&personalidade).Error; err != nil {
+	if err := a.DB.Create(&person).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.IndentedJSON(http.StatusOK, personalidade)
+	c.IndentedJSON(http.StatusOK, person)
 }
 
 func (a *APIEnv) DeletePerson(c *gin.Context) {
@@ -64,7 +65,7 @@ func (a *APIEnv) DeletePerson(c *gin.Context) {
 		return
 	}
 	if !exists {
-		c.JSON(http.StatusNotFound, gin.H{"Error": "Personalidade não encontrada."})
+		c.JSON(http.StatusNotFound, gin.H{"Error": "Person not found."})
 		return
 	}
 	err = database.DeletePerson(id, a.DB)
@@ -73,7 +74,7 @@ func (a *APIEnv) DeletePerson(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"Status": "Personalidade deletada."})
+	c.JSON(http.StatusOK, gin.H{"Status": "Person deleted."})
 }
 
 func (a *APIEnv) UpdatePerson(c *gin.Context) {
@@ -85,10 +86,10 @@ func (a *APIEnv) UpdatePerson(c *gin.Context) {
 		return
 	}
 	if !exists {
-		c.JSON(http.StatusNotFound, gin.H{"Error": "Personalidade não existe."})
+		c.JSON(http.StatusNotFound, gin.H{"Error": "Person not exists."})
 		return
 	}
-	updatedPerson := models.Personalidade{}
+	updatedPerson := models.Person{}
 	err = c.BindJSON(&updatedPerson)
 	if err != nil {
 		fmt.Println(err)
@@ -101,4 +102,9 @@ func (a *APIEnv) UpdatePerson(c *gin.Context) {
 		return
 	}
 	a.GetPerson(c)
+}
+
+func CorsSetup(c *gin.Context) {
+	c.Header("Access-Control-Allow-Origin", "*")
+	c.Header("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers")
 }

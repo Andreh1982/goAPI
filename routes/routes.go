@@ -17,7 +17,7 @@ func HandleRequest() {
 	router := gin.Default()
 	gin.SetMode("release")
 
-	shared.ZapLogCustom([]string{"Inicializando métricas."}, "info")
+	shared.ZapLogCustom([]string{"Inicializando métricas"}, "info")
 
 	metricService, _ := metric.NewPrometheusService()
 	router.Use(middleware.Metrics(metricService))
@@ -26,7 +26,7 @@ func HandleRequest() {
 		promHandler.ServeHTTP(c.Writer, c.Request)
 	})
 
-	shared.ZapLogCustom([]string{"Criando rotas."}, "info")
+	shared.ZapLogCustom([]string{"Criando rotas"}, "info")
 
 	api := &controllers.APIEnv{
 		DB: database.GetDB(),
@@ -38,7 +38,7 @@ func HandleRequest() {
 	router.PUT("/:id", api.UpdatePerson)
 	router.DELETE("/:id", api.DeletePerson)
 
-	shared.ZapLogCustom([]string{"Iniciando a API."}, "info")
+	shared.ZapLogCustom([]string{"Iniciando a API"}, "info")
 
 	router.Run(":9990")
 

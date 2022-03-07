@@ -10,7 +10,7 @@ func main() {
 
 	shared.ZapLogCustom([]string{"Iniciando o servidor goAPI"}, "info")
 
-	database.ConectaComBancoDeDados()
+	database.ConnectDB()
 
 	routes.HandleRequest()
 
