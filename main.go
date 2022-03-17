@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	shared.ZapLogCustom([]string{"Iniciando o servidor goAPI"}, "info")
+	shared.LogCustom([]string{"Iniciando o servidor goAPI"}, "info")
 
 	database.ConnectDB()
 

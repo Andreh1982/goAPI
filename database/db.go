@@ -17,16 +17,13 @@ func ConnectDB() {
 	user := "root"
 	password := "root"
 	db, err := gorm.Open("postgres", "host="+host+" port="+port+" user="+user+" dbname="+dbname+" sslmode=disable password="+password)
-
 	if err != nil {
-		shared.ZapLogCustom([]string{"Database Connection Failed!"}, "error")
+		shared.LogCustom([]string{"Database Connection Failed!"}, "error")
 	}
-
 	db.LogMode(true)
-	db.AutoMigrate(models.Person{})
+	// db.AutoMigrate(models.Person{})
 	DB = db
-	shared.ZapLogCustom([]string{"Database Connected!"}, "info")
-
+	shared.LogCustom([]string{"Database Connected!"}, "info")
 }
 
 func GetDB() *gorm.DB {

@@ -3,34 +3,50 @@ package shared
 import (
 	"log"
 	"os"
-
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
+	"runtime"
+	"strings"
 )
 
-func ZapLogCustom(message []string, errorlevel string) {
+var debug bool
 
-	configLogger := zap.NewProductionConfig()
-	configLogger.EncoderConfig.TimeKey = "ts"
-	configLogger.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-	configLogger.OutputPaths = []string{"stdout"}
-	ZapLogger, err := configLogger.Build()
-
-	if err != nil {
-		log.Fatalf("can't initialize zap logger: %v", err)
-		os.Exit(1)
-	}
-
-	defer ZapLogger.Sync()
+func LogCustom(message []string, errorlevel string) {
 
 	if errorlevel == "info" {
-		ZapLogger.Info(message[0])
+		// ZapLogger.Info(message[0])
+		Info(message[0])
 	} else if errorlevel == "warn" {
-		ZapLogger.Warn(message[0])
+		Debug(message[0])
 	} else if errorlevel == "error" {
-		ZapLogger.Error(message[0])
+		Error(message[0])
 	} else if errorlevel == "fatal" {
-		ZapLogger.Fatal(message[0])
+		Fatal(message[0])
 	}
+}
 
+func init() {
+	debug = os.Getenv("DEBUG") != ""
+}
+func Info(msg string, vars ...interface{}) {
+	log.Printf(strings.Join([]string{"[INFO]", msg}, " "), vars...)
+}
+func Debug(msg string, vars ...interface{}) {
+	if debug {
+		log.Printf(strings.Join([]string{"[DEBUG]", msg}, " "), vars...)
+	}
+}
+func Fatal(msg string) {
+	pc, fn, line, _ := runtime.Caller(1)
+	if debug {
+		log.Fatalf("[FATAL] %s [%s:%s:%d]", msg, runtime.FuncForPC(pc).Name(), fn, line)
+	} else {
+		log.Fatalf("[FATAL] %s [%s:%d]", msg, fn, line)
+	}
+}
+func Error(msg string) {
+	pc, fn, line, _ := runtime.Caller(1)
+	if debug {
+		log.Printf("[ERROR] %s [%s:%s:%d]", msg, runtime.FuncForPC(pc).Name(), fn, line)
+	} else {
+		log.Printf("[ERROR] %s [%s:%d]", msg, fn, line)
+	}
 }
