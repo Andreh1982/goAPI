@@ -6,6 +6,9 @@ import (
 	"goAPI/metric"
 	"goAPI/middleware"
 
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"goAPI/shared"
 
 	"github.com/gin-gonic/gin"
@@ -36,6 +39,7 @@ func HandleRequest() {
 	router.GET("/:id", api.GetPerson)
 	router.POST("", api.CreatePerson)
 	router.PUT("/:id", api.UpdatePerson)
+	router.GET("/swagger/:id", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	router.DELETE("/:id", api.DeletePerson)
 
 	shared.LogCustom([]string{"Iniciando a API"}, "info")

@@ -15,6 +15,14 @@ type APIEnv struct {
 	DB *gorm.DB
 }
 
+// HealthCheck godoc
+// @Summary Mostra o status do servidor.
+// @Description obtém o status do servidor.
+// @Tags root
+// @Accept */*
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router / [get]
 func (a *APIEnv) GetPersons(c *gin.Context) {
 	CorsSetup(c)
 	person, err := database.GetPersons(a.DB)

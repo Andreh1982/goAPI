@@ -1,0 +1,20 @@
+info:
+  contact: {}
+paths:
+  /:
+    get:
+      consumes:
+      - '*/*'
+      description: obtém o status do servidor.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Mostra o status do servidor.
+      tags:
+      - root
+swagger: "2.0"
