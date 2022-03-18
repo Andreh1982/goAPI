@@ -4,6 +4,8 @@ package docs
 
 import "github.com/swaggo/swag"
 
+// 123
+
 const docTemplate = `{
     "schemes": {{ marshal .Schemes }},
     "swagger": "2.0",
